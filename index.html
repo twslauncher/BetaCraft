@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetaCraft Download</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        body {
+            background-color: #8eb971;
+            background-image: 
+                linear-gradient(90deg, rgba(142, 185, 113, 0.5) 50%, transparent 50%),
+                linear-gradient(rgba(142, 185, 113, 0.5) 50%, transparent 50%);
+            background-size: 32px 32px;
+            font-family: 'Minecraft', monospace;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://fonts.cdnfonts.com/s/13609/Minecraft.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #8b8b8b;
+            border: 4px solid;
+            border-color: #373737 #fff #fff #373737;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 
+                8px 8px 0 rgba(0, 0, 0, 0.2),
+                inset 4px 4px 0 #c6c6c6,
+                inset -4px -4px 0 #595959;
+        }
+        
+        .title-container {
+            background-color: #404040;
+            border: 4px solid;
+            border-color: #595959 #2a2a2a #2a2a2a #595959;
+            padding: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: inset 2px 2px 0 #8b8b8b;
+        }
+        
+        h1 {
+            color: #ffd;
+            text-shadow: 2px 2px 0 #3f3f00;
+            font-size: 24px;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 5px;
+            text-shadow: 1px 1px 0 #000;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .minecraft-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #727272;
+            border: 4px solid;
+            border-color: #fff #595959 #595959 #fff;
+            padding: 12px 16px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.1s;
+            text-align: left;
+            min-height: 60px;
+        }
+        
+        .minecraft-button:hover {
+            background-color: #7a7a7a;
+            transform: translateY(-2px);
+        }
+        
+        .minecraft-button:active {
+            border-color: #595959 #fff #fff #595959;
+            background-color: #6a6a6a;
+            transform: translateY(0);
+        }
+        
+        .minecraft-button.copied {
+            background-color: #5a7a5a;
+            border-color: #7a9a7a #3a5a3a #3a5a3a #7a9a7a;
+        }
+        
+        .minecraft-button.copied:active {
+            border-color: #3a5a3a #7a9a7a #7a9a7a #3a5a3a;
+        }
+        
+        .link-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .link-name {
+            color: #ffd;
+            text-shadow: 1px 1px 0 #3f3f00;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .link-url {
+            color: #ccc;
+            font-size: 12px;
+            word-break: break-all;
+            text-shadow: 1px 1px 0 #333;
+        }
+        
+        .copy-icon {
+            background-color: #404040;
+            border: 3px solid;
+            border-color: #595959 #2a2a2a #2a2a2a #595959;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-left: 12px;
+            flex-shrink: 0;
+            box-shadow: inset 1px 1px 0 #727272;
+        }
+        
+        .minecraft-button:hover .copy-icon {
+            background-color: #4a4a4a;
+        }
+        
+        .copied-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(90, 122, 90, 0.95);
+            color: #ffd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            text-shadow: 2px 2px 0 #3f3f00;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .minecraft-button.copied .copied-text {
+            opacity: 1;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #404040;
+            border: 4px solid;
+            border-color: #595959 #2a2a2a #2a2a2a #595959;
+            color: #ffd;
+            padding: 12px 20px;
+            font-size: 16px;
+            text-shadow: 1px 1px 0 #3f3f00;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        .instructions {
+            background-color: #595959;
+            border: 4px solid;
+            border-color: #8b8b8b #404040 #404040 #8b8b8b;
+            padding: 16px;
+            margin-top: 20px;
+            box-shadow: inset 2px 2px 0 #727272;
+        }
+        
+        .instructions h3 {
+            color: #ffd;
+            text-shadow: 1px 1px 0 #3f3f00;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #8b8b8b;
+            padding-bottom: 5px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            color: #ccc;
+            font-size: 12px;
+            text-shadow: 1px 1px 0 #333;
+        }
+        
+        .instructions li {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .minecraft-border {
+            width: 100%;
+            height: 16px;
+            background-color: #404040;
+            border: 4px solid;
+            border-color: #595959 #2a2a2a #2a2a2a #595959;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .minecraft-border::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background-color: #5a7a5a;
+            border: 2px solid;
+            border-color: #7a9a7a #3a5a3a #3a5a3a #7a9a7a;
+        }
+        
+        .header-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .minecraft-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #8b8b8b;
+            border: 3px solid;
+            border-color: #fff #595959 #595959 #fff;
+            position: relative;
+        }
+        
+        .minecraft-icon::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background-color: #5a7a5a;
+        }
+        
+        .minecraft-icon.dirt {
+            background-color: #8b6b4a;
+        }
+        
+        .minecraft-icon.dirt::after {
+            background-color: #7a5a3a;
+        }
+        
+        .minecraft-icon.stone {
+            background-color: #8b8b8b;
+        }
+        
+        .minecraft-icon.stone::after {
+            background-color: #7a7a7a;
+        }
+        
+        .minecraft-icon.wood {
+            background-color: #8b6b4a;
+        }
+        
+        .minecraft-icon.wood::after {
+            background-color: #6a4a2a;
+        }
+        
+        .footer {
+            color: #aaa;
+            font-size: 10px;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 1px 1px 0 #333;
+        }
+        
+        @media (max-width: 650px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .minecraft-button {
+                padding: 10px 12px;
+                min-height: 70px;
+            }
+            
+            .link-name {
+                font-size: 16px;
+            }
+            
+            .link-url {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-icons">
+        <div class="minecraft-icon dirt"></div>
+        <div class="minecraft-icon stone"></div>
+        <div class="minecraft-icon wood"></div>
+        <div class="minecraft-icon"></div>
+        <div class="minecraft-icon dirt"></div>
+    </div>
+    
+    <div class="container">
+        <div class="title-container">
+            <h1>BetaCraft Download</h1>
+            <div class="subtitle">Нажмите на блок, чтобы скачать сборку</div>
+        </div>
+        
+        <div class="button-container">
+            <div class="minecraft-button" data-url="https://github.com/twslauncher/BetaCraft/releases/download/1.0.0.0/BetaRenewed.zip" data-name="Minecraft BetaRenewed">
+                <div class="link-info">
+                    <div class="link-name">Minecraft BetaRenewed</div>
+                    <div class="link-url">Beta Renewed brings Beta 1.7.3 to modern Minecraft, restoring old features like no hunger, retro textures, and classic world gen.</div>
+                </div>
+                <div class="copy-icon">C</div>
+                <div class="copied-text">Minecraft BetaRenewed - Ссылка получена.</div>
+            </div>
+            
+            <div class="minecraft-button" data-url="https://github.com/twslauncher/home/releases/download/7.3.03/Better.than.Adventure-.Reborn.zip" data-name="Better Than Adventure! Reborn">
+                <div class="link-info">
+                    <div class="link-name">Better Than Adventure! Reborn</div>
+                    <div class="link-url">BTA brings new additions to classic Minecraft in the form of timely updates</div>
+                </div>
+                <div class="copy-icon">C</div>
+                <div class="copied-text">Better Than Adventure! Reborn - Ссылка получена.</div>
+            </div>
+            
+           
+        </div>
+        
+        <div class="minecraft-border"></div>
+        
+        
+                
+            </ul>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">ССЫЛКА СКОПИРОВАНА!</div>
+    
+    <div class="footer">REVOLUTION Studios © 2026 | Not affiliated with Mojang/Microsoft</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.minecraft-button');
+            const notification = document.getElementById('notification');
+            
+            // Добавляем звуковые эффекты (опционально)
+            const clickSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', async function() {
+                    const url = this.getAttribute('data-url');
+                    const name = this.getAttribute('data-name');
+                    
+                    // Визуальная обратная связь
+                    buttons.forEach(btn => btn.classList.remove('copied'));
+                    this.classList.add('copied');
+                    
+                    try {
+                        // Пытаемся использовать современный API
+                        await navigator.clipboard.writeText(url);
+                        
+                        // Уведомление
+                        notification.textContent = `"${name}" СКОПИРОВАНА!`;
+                        notification.classList.add('show');
+                        
+                        // Скрываем уведомление через 2 секунды
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 2000);
+                        
+                        // Возвращаем кнопку в исходное состояние через 1.5 секунды
+                        setTimeout(() => {
+                            this.classList.remove('copied');
+                        }, 1500);
+                        
+                    } catch (err) {
+                        // Fallback для старых браузеров
+                        const textArea = document.createElement('textarea');
+                        textArea.value = url;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        // Уведомление
+                        notification.textContent = `"${name}" СКОПИРОВАНА (старый метод)!`;
+                        notification.classList.add('show');
+                        
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                            this.classList.remove('copied');
+                        }, 2000);
+                    }
+                });
+            });
+            
+            // Добавляем эффект наведения с псевдо-звуком (опционально)
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    // Можно добавить звук наведения при наличии файла
+                });
+                
+                button.addEventListener('mousedown', function() {
+                    // Эффект нажатия уже есть в CSS
+                });
+            });
+        });
+    </script>
+</body>
+</html>
